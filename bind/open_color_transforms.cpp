@@ -3,35 +3,117 @@
 
 namespace cppmm_bind {
 
-namespace OpenColorIO {
+namespace OCIO_NAMESPACE {
 
-namespace v1 {
+namespace OpenColorIO = ::OCIO_NAMESPACE;
 
-namespace OpenColorIO = ::OpenColorIO::v1;
+struct GradingBSplineCurve {
+    using BoundType = OpenColorIO::GradingBSplineCurve;
+
+    static std::shared_ptr<OpenColorIO::GradingBSplineCurve>
+    Create(unsigned long size);
+
+    static std::shared_ptr<OpenColorIO::GradingBSplineCurve>
+    Create(std::initializer_list<OpenColorIO::GradingControlPoint> values);
+
+    std::shared_ptr<OpenColorIO::GradingBSplineCurve>
+    createEditableCopy() const;
+
+    unsigned long getNumControlPoints() const;
+
+    void setNumControlPoints(unsigned long size);
+
+    const OpenColorIO::GradingControlPoint&
+    getControlPoint(unsigned long index) const;
+
+    OpenColorIO::GradingControlPoint& getControlPoint(unsigned long index);
+
+    float getSlope(unsigned long index) const;
+
+    void setSlope(unsigned long index, float slope);
+
+    bool slopesAreDefault() const;
+
+    void validate() const;
+
+    GradingBSplineCurve(const OpenColorIO::GradingBSplineCurve&);
+
+    OpenColorIO::GradingBSplineCurve&
+    operator=(const OpenColorIO::GradingBSplineCurve&);
+
+    ~GradingBSplineCurve();
+
+} CPPMM_OPAQUEPTR; // struct GradingBSplineCurve
+
+struct GradingRGBCurve {
+    using BoundType = OpenColorIO::GradingRGBCurve;
+
+    static std::shared_ptr<OpenColorIO::GradingRGBCurve>
+    Create(OpenColorIO::GradingStyle style);
+
+    static std::shared_ptr<OpenColorIO::GradingRGBCurve>
+    Create(const std::shared_ptr<const OpenColorIO::GradingRGBCurve>& rhs);
+
+    static std::shared_ptr<OpenColorIO::GradingRGBCurve> Create(
+        const std::shared_ptr<const OpenColorIO::GradingBSplineCurve>& red,
+        const std::shared_ptr<const OpenColorIO::GradingBSplineCurve>& green,
+        const std::shared_ptr<const OpenColorIO::GradingBSplineCurve>& blue,
+        const std::shared_ptr<const OpenColorIO::GradingBSplineCurve>& master);
+
+    std::shared_ptr<OpenColorIO::GradingRGBCurve> createEditableCopy() const;
+
+    void validate() const;
+
+    bool isIdentity() const;
+
+    std::shared_ptr<const OpenColorIO::GradingBSplineCurve>
+    getCurve(OpenColorIO::RGBCurveType c) const;
+
+    std::shared_ptr<OpenColorIO::GradingBSplineCurve>
+    getCurve(OpenColorIO::RGBCurveType c);
+
+    ~GradingRGBCurve();
+
+    OpenColorIO::GradingRGBCurve&
+    operator=(const OpenColorIO::GradingRGBCurve&);
+
+} CPPMM_OPAQUEPTR; // struct GradingRGBCurve
 
 struct Transform {
     using BoundType = OpenColorIO::Transform;
 
-    ~Transform();
-
-    OCIO_SHARED_PTR<OpenColorIO::Transform> createEditableCopy() const;
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
 
     OpenColorIO::TransformDirection getDirection() const;
 
     void setDirection(OpenColorIO::TransformDirection dir);
+
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    Transform(const OpenColorIO::Transform&);
+
+    OpenColorIO::Transform& operator=(const OpenColorIO::Transform&);
+
+    ~Transform();
 
 } CPPMM_OPAQUEPTR; // struct Transform
 
 struct AllocationTransform {
     using BoundType = OpenColorIO::AllocationTransform;
 
-    OCIO_SHARED_PTR<OpenColorIO::Transform> createEditableCopy() const;
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
 
     OpenColorIO::TransformDirection getDirection() const;
 
     void setDirection(OpenColorIO::TransformDirection dir);
 
-    static OCIO_SHARED_PTR<OpenColorIO::AllocationTransform> Create();
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::AllocationTransform> Create();
 
     OpenColorIO::Allocation getAllocation() const;
 
@@ -43,71 +125,121 @@ struct AllocationTransform {
 
     void setVars(int numvars, const float* vars);
 
+    OpenColorIO::AllocationTransform&
+    operator=(const OpenColorIO::AllocationTransform&);
+
+    ~AllocationTransform();
+
 } CPPMM_OPAQUEBYTES; // struct AllocationTransform
+
+struct BuiltinTransform {
+    using BoundType = OpenColorIO::BuiltinTransform;
+
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
+
+    OpenColorIO::TransformDirection getDirection() const;
+
+    void setDirection(OpenColorIO::TransformDirection dir);
+
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::BuiltinTransform> Create();
+
+    const char* getStyle() const;
+
+    void setStyle(const char* style);
+
+    const char* getDescription() const;
+
+    ~BuiltinTransform();
+
+} CPPMM_OPAQUEPTR; // struct BuiltinTransform
 
 struct CDLTransform {
     using BoundType = OpenColorIO::CDLTransform;
 
-    OCIO_SHARED_PTR<OpenColorIO::Transform> createEditableCopy() const;
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
 
     OpenColorIO::TransformDirection getDirection() const;
 
     void setDirection(OpenColorIO::TransformDirection dir);
 
-    static OCIO_SHARED_PTR<OpenColorIO::CDLTransform> Create();
+    OpenColorIO::TransformType getTransformType() const;
 
-    static OCIO_SHARED_PTR<OpenColorIO::CDLTransform>
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::CDLTransform> Create();
+
+    static std::shared_ptr<OpenColorIO::CDLTransform>
     CreateFromFile(const char* src, const char* cccid);
 
-    bool
-    equals(const OCIO_SHARED_PTR<const OpenColorIO::CDLTransform>& other) const;
+    static std::shared_ptr<OpenColorIO::GroupTransform>
+    CreateGroupFromFile(const char* src);
 
-    const char* getXML() const;
+    OpenColorIO::FormatMetadata& getFormatMetadata();
 
-    void setXML(const char* xml);
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
 
-    void setSlope(const float* rgb);
+    bool equals(const OpenColorIO::CDLTransform& other) const;
 
-    void getSlope(float* rgb) const;
+    OpenColorIO::CDLStyle getStyle() const;
 
-    void setOffset(const float* rgb);
+    void setStyle(OpenColorIO::CDLStyle style);
 
-    void getOffset(float* rgb) const;
+    void getSlope(double* rgb) const;
 
-    void setPower(const float* rgb);
+    void setSlope(const double* rgb);
 
-    void getPower(float* rgb) const;
+    void getOffset(double* rgb) const;
 
-    void setSOP(const float* vec9);
+    void setOffset(const double* rgb);
 
-    void getSOP(float* vec9) const;
+    void getPower(double* rgb) const;
 
-    void setSat(float sat);
+    void setPower(const double* rgb);
 
-    float getSat() const;
+    void getSOP(double* vec9) const;
 
-    void getSatLumaCoefs(float* rgb) const;
+    void setSOP(const double* vec9);
 
-    void setID(const char* id);
+    double getSat() const;
+
+    void setSat(double sat);
+
+    void getSatLumaCoefs(double* rgb) const;
 
     const char* getID() const;
 
-    void setDescription(const char* desc);
+    void setID(const char* id);
 
-    const char* getDescription() const;
+    const char* getFirstSOPDescription() const;
 
-} CPPMM_OPAQUEBYTES; // struct CDLTransform
+    void setFirstSOPDescription(const char* description);
+
+    CDLTransform(const OpenColorIO::CDLTransform&);
+
+    OpenColorIO::CDLTransform& operator=(const OpenColorIO::CDLTransform&);
+
+    ~CDLTransform();
+
+} CPPMM_OPAQUEPTR; // struct CDLTransform
 
 struct ColorSpaceTransform {
     using BoundType = OpenColorIO::ColorSpaceTransform;
 
-    OCIO_SHARED_PTR<OpenColorIO::Transform> createEditableCopy() const;
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
 
     OpenColorIO::TransformDirection getDirection() const;
 
     void setDirection(OpenColorIO::TransformDirection dir);
 
-    static OCIO_SHARED_PTR<OpenColorIO::ColorSpaceTransform> Create();
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::ColorSpaceTransform> Create();
 
     const char* getSrc() const;
 
@@ -117,86 +249,303 @@ struct ColorSpaceTransform {
 
     void setDst(const char* dst);
 
+    bool getDataBypass() const;
+
+    void setDataBypass(bool enabled);
+
+    OpenColorIO::ColorSpaceTransform&
+    operator=(const OpenColorIO::ColorSpaceTransform&);
+
+    ~ColorSpaceTransform();
+
 } CPPMM_OPAQUEBYTES; // struct ColorSpaceTransform
 
-struct DisplayTransform {
-    using BoundType = OpenColorIO::DisplayTransform;
+struct DisplayViewTransform {
+    using BoundType = OpenColorIO::DisplayViewTransform;
 
-    OCIO_SHARED_PTR<OpenColorIO::Transform> createEditableCopy() const;
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
 
     OpenColorIO::TransformDirection getDirection() const;
 
     void setDirection(OpenColorIO::TransformDirection dir);
 
-    static OCIO_SHARED_PTR<OpenColorIO::DisplayTransform> Create();
+    OpenColorIO::TransformType getTransformType() const;
 
-    void setInputColorSpaceName(const char* name);
+    void validate() const;
 
-    const char* getInputColorSpaceName() const;
+    static std::shared_ptr<OpenColorIO::DisplayViewTransform> Create();
 
-    void setLinearCC(const OCIO_SHARED_PTR<const OpenColorIO::Transform>& cc);
+    const char* getSrc() const;
 
-    OCIO_SHARED_PTR<const OpenColorIO::Transform> getLinearCC() const;
-
-    void
-    setColorTimingCC(const OCIO_SHARED_PTR<const OpenColorIO::Transform>& cc);
-
-    OCIO_SHARED_PTR<const OpenColorIO::Transform> getColorTimingCC() const;
-
-    void setChannelView(
-        const OCIO_SHARED_PTR<const OpenColorIO::Transform>& transform);
-
-    OCIO_SHARED_PTR<const OpenColorIO::Transform> getChannelView() const;
-
-    void setDisplay(const char* display);
+    void setSrc(const char* name);
 
     const char* getDisplay() const;
 
-    void setView(const char* view);
+    void setDisplay(const char* display);
 
     const char* getView() const;
 
-    void setDisplayCC(const OCIO_SHARED_PTR<const OpenColorIO::Transform>& cc);
+    void setView(const char* view);
 
-    OCIO_SHARED_PTR<const OpenColorIO::Transform> getDisplayCC() const;
+    bool getLooksBypass() const;
 
-    void setLooksOverride(const char* looks);
+    void setLooksBypass(bool bypass);
 
-    const char* getLooksOverride() const;
+    bool getDataBypass() const;
 
-    void setLooksOverrideEnabled(bool enabled);
+    void setDataBypass(bool bypass);
 
-    bool getLooksOverrideEnabled() const;
+    ~DisplayViewTransform();
 
-} CPPMM_OPAQUEBYTES; // struct DisplayTransform
+} CPPMM_OPAQUEBYTES; // struct DisplayViewTransform
+
+struct DynamicProperty {
+    using BoundType = OpenColorIO::DynamicProperty;
+
+    OpenColorIO::DynamicPropertyType getType() const;
+
+    OpenColorIO::DynamicProperty&
+    operator=(const OpenColorIO::DynamicProperty&);
+
+    DynamicProperty(const OpenColorIO::DynamicProperty&);
+
+    ~DynamicProperty();
+
+} CPPMM_OPAQUEPTR; // struct DynamicProperty
+
+struct DynamicPropertyDouble {
+    using BoundType = OpenColorIO::DynamicPropertyDouble;
+
+    double getValue() const;
+
+    void setValue(double value);
+
+    DynamicPropertyDouble(const OpenColorIO::DynamicPropertyDouble&);
+
+    OpenColorIO::DynamicPropertyDouble&
+    operator=(const OpenColorIO::DynamicPropertyDouble&);
+
+    ~DynamicPropertyDouble();
+
+} CPPMM_OPAQUEPTR; // struct DynamicPropertyDouble
+
+struct DynamicPropertyGradingPrimary {
+    using BoundType = OpenColorIO::DynamicPropertyGradingPrimary;
+
+    const OpenColorIO::GradingPrimary& getValue() const;
+
+    void setValue(const OpenColorIO::GradingPrimary& value);
+
+    DynamicPropertyGradingPrimary(
+        const OpenColorIO::DynamicPropertyGradingPrimary&);
+
+    OpenColorIO::DynamicPropertyGradingPrimary&
+    operator=(const OpenColorIO::DynamicPropertyGradingPrimary&);
+
+    ~DynamicPropertyGradingPrimary();
+
+} CPPMM_OPAQUEPTR; // struct DynamicPropertyGradingPrimary
+
+struct DynamicPropertyGradingRGBCurve {
+    using BoundType = OpenColorIO::DynamicPropertyGradingRGBCurve;
+
+    const std::shared_ptr<const OpenColorIO::GradingRGBCurve>& getValue() const;
+
+    void
+    setValue(const std::shared_ptr<const OpenColorIO::GradingRGBCurve>& value);
+
+    DynamicPropertyGradingRGBCurve(
+        const OpenColorIO::DynamicPropertyGradingRGBCurve&);
+
+    OpenColorIO::DynamicPropertyGradingRGBCurve&
+    operator=(const OpenColorIO::DynamicPropertyGradingRGBCurve&);
+
+    ~DynamicPropertyGradingRGBCurve();
+
+} CPPMM_OPAQUEPTR; // struct DynamicPropertyGradingRGBCurve
+
+struct DynamicPropertyGradingTone {
+    using BoundType = OpenColorIO::DynamicPropertyGradingTone;
+
+    const OpenColorIO::GradingTone& getValue() const;
+
+    void setValue(const OpenColorIO::GradingTone& value);
+
+    DynamicPropertyGradingTone(const OpenColorIO::DynamicPropertyGradingTone&);
+
+    OpenColorIO::DynamicPropertyGradingTone&
+    operator=(const OpenColorIO::DynamicPropertyGradingTone&);
+
+    ~DynamicPropertyGradingTone();
+
+} CPPMM_OPAQUEPTR; // struct DynamicPropertyGradingTone
 
 struct ExponentTransform {
     using BoundType = OpenColorIO::ExponentTransform;
 
-    OCIO_SHARED_PTR<OpenColorIO::Transform> createEditableCopy() const;
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
 
     OpenColorIO::TransformDirection getDirection() const;
 
     void setDirection(OpenColorIO::TransformDirection dir);
 
-    static OCIO_SHARED_PTR<OpenColorIO::ExponentTransform> Create();
+    OpenColorIO::TransformType getTransformType() const;
 
-    void setValue(const float* vec4);
+    void validate() const;
 
-    void getValue(float* vec4) const;
+    static std::shared_ptr<OpenColorIO::ExponentTransform> Create();
 
-} CPPMM_OPAQUEBYTES; // struct ExponentTransform
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
+
+    OpenColorIO::FormatMetadata& getFormatMetadata();
+
+    bool equals(const OpenColorIO::ExponentTransform& other) const;
+
+    void getValue(double (&vec4)[4]) const;
+
+    void setValue(const double (&vec4)[4]);
+
+    OpenColorIO::NegativeStyle getNegativeStyle() const;
+
+    void setNegativeStyle(OpenColorIO::NegativeStyle style);
+
+    ExponentTransform(const OpenColorIO::ExponentTransform&);
+
+    OpenColorIO::ExponentTransform&
+    operator=(const OpenColorIO::ExponentTransform&);
+
+    ~ExponentTransform();
+
+} CPPMM_OPAQUEPTR; // struct ExponentTransform
+
+struct ExponentWithLinearTransform {
+    using BoundType = OpenColorIO::ExponentWithLinearTransform;
+
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
+
+    OpenColorIO::TransformDirection getDirection() const;
+
+    void setDirection(OpenColorIO::TransformDirection dir);
+
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::ExponentWithLinearTransform> Create();
+
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
+
+    OpenColorIO::FormatMetadata& getFormatMetadata();
+
+    bool equals(const OpenColorIO::ExponentWithLinearTransform& other) const;
+
+    void getGamma(double (&values)[4]) const;
+
+    void setGamma(const double (&values)[4]);
+
+    void getOffset(double (&values)[4]) const;
+
+    void setOffset(const double (&values)[4]);
+
+    OpenColorIO::NegativeStyle getNegativeStyle() const;
+
+    void setNegativeStyle(OpenColorIO::NegativeStyle style);
+
+    ExponentWithLinearTransform(
+        const OpenColorIO::ExponentWithLinearTransform&);
+
+    OpenColorIO::ExponentWithLinearTransform&
+    operator=(const OpenColorIO::ExponentWithLinearTransform&);
+
+    ~ExponentWithLinearTransform();
+
+} CPPMM_OPAQUEPTR; // struct ExponentWithLinearTransform
+
+struct ExposureContrastTransform {
+    using BoundType = OpenColorIO::ExposureContrastTransform;
+
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
+
+    OpenColorIO::TransformDirection getDirection() const;
+
+    void setDirection(OpenColorIO::TransformDirection dir);
+
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::ExposureContrastTransform> Create();
+
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
+
+    OpenColorIO::FormatMetadata& getFormatMetadata();
+
+    bool equals(const OpenColorIO::ExposureContrastTransform& other) const;
+
+    OpenColorIO::ExposureContrastStyle getStyle() const;
+
+    void setStyle(OpenColorIO::ExposureContrastStyle style);
+
+    double getExposure() const;
+
+    void setExposure(double exposure);
+
+    bool isExposureDynamic() const;
+
+    void makeExposureDynamic();
+
+    void makeExposureNonDynamic();
+
+    double getContrast() const;
+
+    void setContrast(double contrast);
+
+    bool isContrastDynamic() const;
+
+    void makeContrastDynamic();
+
+    void makeContrastNonDynamic();
+
+    double getGamma() const;
+
+    void setGamma(double gamma);
+
+    bool isGammaDynamic() const;
+
+    void makeGammaDynamic();
+
+    void makeGammaNonDynamic();
+
+    double getPivot() const;
+
+    void setPivot(double pivot);
+
+    double getLogExposureStep() const;
+
+    void setLogExposureStep(double logExposureStep);
+
+    double getLogMidGray() const;
+
+    void setLogMidGray(double logMidGray);
+
+    ~ExposureContrastTransform();
+
+} CPPMM_OPAQUEPTR; // struct ExposureContrastTransform
 
 struct FileTransform {
     using BoundType = OpenColorIO::FileTransform;
 
-    OCIO_SHARED_PTR<OpenColorIO::Transform> createEditableCopy() const;
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
 
     OpenColorIO::TransformDirection getDirection() const;
 
     void setDirection(OpenColorIO::TransformDirection dir);
 
-    static OCIO_SHARED_PTR<OpenColorIO::FileTransform> Create();
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::FileTransform> Create();
 
     const char* getSrc() const;
 
@@ -206,69 +555,390 @@ struct FileTransform {
 
     void setCCCId(const char* id);
 
+    OpenColorIO::CDLStyle getCDLStyle() const;
+
+    void setCDLStyle(OpenColorIO::CDLStyle);
+
     OpenColorIO::Interpolation getInterpolation() const;
 
     void setInterpolation(OpenColorIO::Interpolation interp);
 
-    static int getNumFormats();
+    static int GetNumFormats();
 
-    static const char* getFormatNameByIndex(int index);
+    static const char* GetFormatNameByIndex(int index);
 
-    static const char* getFormatExtensionByIndex(int index);
+    static const char* GetFormatExtensionByIndex(int index);
+
+    OpenColorIO::FileTransform& operator=(const OpenColorIO::FileTransform&);
+
+    ~FileTransform();
 
 } CPPMM_OPAQUEBYTES; // struct FileTransform
+
+struct FixedFunctionTransform {
+    using BoundType = OpenColorIO::FixedFunctionTransform;
+
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
+
+    OpenColorIO::TransformDirection getDirection() const;
+
+    void setDirection(OpenColorIO::TransformDirection dir);
+
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::FixedFunctionTransform>
+    Create(OpenColorIO::FixedFunctionStyle style);
+
+    static std::shared_ptr<OpenColorIO::FixedFunctionTransform>
+    Create(OpenColorIO::FixedFunctionStyle style, const double* params,
+           unsigned long num);
+
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
+
+    OpenColorIO::FormatMetadata& getFormatMetadata();
+
+    bool equals(const OpenColorIO::FixedFunctionTransform& other) const;
+
+    OpenColorIO::FixedFunctionStyle getStyle() const;
+
+    void setStyle(OpenColorIO::FixedFunctionStyle style);
+
+    unsigned long getNumParams() const;
+
+    void getParams(double* params) const;
+
+    void setParams(const double* params, unsigned long num);
+
+    FixedFunctionTransform(const OpenColorIO::FixedFunctionTransform&);
+
+    OpenColorIO::FixedFunctionTransform&
+    operator=(const OpenColorIO::FixedFunctionTransform&);
+
+    ~FixedFunctionTransform();
+
+} CPPMM_OPAQUEPTR; // struct FixedFunctionTransform
+
+struct GradingPrimaryTransform {
+    using BoundType = OpenColorIO::GradingPrimaryTransform;
+
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
+
+    OpenColorIO::TransformDirection getDirection() const;
+
+    void setDirection(OpenColorIO::TransformDirection dir);
+
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::GradingPrimaryTransform>
+    Create(OpenColorIO::GradingStyle style);
+
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
+
+    OpenColorIO::FormatMetadata& getFormatMetadata();
+
+    bool equals(const OpenColorIO::GradingPrimaryTransform& other) const;
+
+    OpenColorIO::GradingStyle getStyle() const;
+
+    void setStyle(OpenColorIO::GradingStyle style);
+
+    const OpenColorIO::GradingPrimary& getValue() const;
+
+    void setValue(const OpenColorIO::GradingPrimary& values);
+
+    bool isDynamic() const;
+
+    void makeDynamic();
+
+    void makeNonDynamic();
+
+    GradingPrimaryTransform(const OpenColorIO::GradingPrimaryTransform&);
+
+    OpenColorIO::GradingPrimaryTransform&
+    operator=(const OpenColorIO::GradingPrimaryTransform&);
+
+    ~GradingPrimaryTransform();
+
+} CPPMM_OPAQUEPTR; // struct GradingPrimaryTransform
+
+struct GradingRGBCurveTransform {
+    using BoundType = OpenColorIO::GradingRGBCurveTransform;
+
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
+
+    OpenColorIO::TransformDirection getDirection() const;
+
+    void setDirection(OpenColorIO::TransformDirection dir);
+
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::GradingRGBCurveTransform>
+    Create(OpenColorIO::GradingStyle style);
+
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
+
+    OpenColorIO::FormatMetadata& getFormatMetadata();
+
+    bool equals(const OpenColorIO::GradingRGBCurveTransform& other) const;
+
+    OpenColorIO::GradingStyle getStyle() const;
+
+    void setStyle(OpenColorIO::GradingStyle style);
+
+    const std::shared_ptr<const OpenColorIO::GradingRGBCurve> getValue() const;
+
+    void
+    setValue(const std::shared_ptr<const OpenColorIO::GradingRGBCurve>& values);
+
+    float getSlope(OpenColorIO::RGBCurveType c, unsigned long index) const;
+
+    void setSlope(OpenColorIO::RGBCurveType c, unsigned long index,
+                  float slope);
+
+    bool slopesAreDefault(OpenColorIO::RGBCurveType c) const;
+
+    bool getBypassLinToLog() const;
+
+    void setBypassLinToLog(bool bypass);
+
+    bool isDynamic() const;
+
+    void makeDynamic();
+
+    void makeNonDynamic();
+
+    GradingRGBCurveTransform(const OpenColorIO::GradingRGBCurveTransform&);
+
+    OpenColorIO::GradingRGBCurveTransform&
+    operator=(const OpenColorIO::GradingRGBCurveTransform&);
+
+    ~GradingRGBCurveTransform();
+
+} CPPMM_OPAQUEPTR; // struct GradingRGBCurveTransform
+
+struct GradingToneTransform {
+    using BoundType = OpenColorIO::GradingToneTransform;
+
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
+
+    OpenColorIO::TransformDirection getDirection() const;
+
+    void setDirection(OpenColorIO::TransformDirection dir);
+
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::GradingToneTransform>
+    Create(OpenColorIO::GradingStyle style);
+
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
+
+    OpenColorIO::FormatMetadata& getFormatMetadata();
+
+    bool equals(const OpenColorIO::GradingToneTransform& other) const;
+
+    OpenColorIO::GradingStyle getStyle() const;
+
+    void setStyle(OpenColorIO::GradingStyle style);
+
+    const OpenColorIO::GradingTone& getValue() const;
+
+    void setValue(const OpenColorIO::GradingTone& values);
+
+    bool isDynamic() const;
+
+    void makeDynamic();
+
+    void makeNonDynamic();
+
+    GradingToneTransform(const OpenColorIO::GradingToneTransform&);
+
+    OpenColorIO::GradingToneTransform&
+    operator=(const OpenColorIO::GradingToneTransform&);
+
+    ~GradingToneTransform();
+
+} CPPMM_OPAQUEPTR; // struct GradingToneTransform
 
 struct GroupTransform {
     using BoundType = OpenColorIO::GroupTransform;
 
-    OCIO_SHARED_PTR<OpenColorIO::Transform> createEditableCopy() const;
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
 
     OpenColorIO::TransformDirection getDirection() const;
 
     void setDirection(OpenColorIO::TransformDirection dir);
 
-    static OCIO_SHARED_PTR<OpenColorIO::GroupTransform> Create();
+    OpenColorIO::TransformType getTransformType() const;
 
-    OCIO_SHARED_PTR<const OpenColorIO::Transform> getTransform(int index) const;
+    void validate() const;
 
-    int size() const;
+    static std::shared_ptr<OpenColorIO::GroupTransform> Create();
 
-    void
-    push_back(const OCIO_SHARED_PTR<const OpenColorIO::Transform>& transform);
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
 
-    void clear();
+    OpenColorIO::FormatMetadata& getFormatMetadata();
 
-    bool empty() const;
+    std::shared_ptr<const OpenColorIO::Transform> getTransform(int index) const;
 
-} CPPMM_OPAQUEBYTES; // struct GroupTransform
+    std::shared_ptr<OpenColorIO::Transform>& getTransform(int index);
 
-struct LogTransform {
-    using BoundType = OpenColorIO::LogTransform;
+    int getNumTransforms() const;
 
-    OCIO_SHARED_PTR<OpenColorIO::Transform> createEditableCopy() const;
+    void appendTransform(std::shared_ptr<OpenColorIO::Transform> transform);
+
+    void prependTransform(std::shared_ptr<OpenColorIO::Transform> transform);
+
+    void write(const std::shared_ptr<const OpenColorIO::Config>& config,
+               const char* formatName,
+               std::basic_ostream<char, std::char_traits<char>>& os) const;
+
+    static int GetNumWriteFormats();
+
+    static const char* GetFormatNameByIndex(int index);
+
+    static const char* GetFormatExtensionByIndex(int index);
+
+    GroupTransform(const OpenColorIO::GroupTransform&);
+
+    OpenColorIO::GroupTransform& operator=(const OpenColorIO::GroupTransform&);
+
+    ~GroupTransform();
+
+} CPPMM_OPAQUEPTR; // struct GroupTransform
+
+struct LogAffineTransform {
+    using BoundType = OpenColorIO::LogAffineTransform;
+
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
 
     OpenColorIO::TransformDirection getDirection() const;
 
     void setDirection(OpenColorIO::TransformDirection dir);
 
-    static OCIO_SHARED_PTR<OpenColorIO::LogTransform> Create();
+    OpenColorIO::TransformType getTransformType() const;
 
-    void setBase(float val);
+    void validate() const;
 
-    float getBase() const;
+    static std::shared_ptr<OpenColorIO::LogAffineTransform> Create();
 
-} CPPMM_OPAQUEBYTES; // struct LogTransform
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
+
+    OpenColorIO::FormatMetadata& getFormatMetadata();
+
+    bool equals(const OpenColorIO::LogAffineTransform& other) const;
+
+    double getBase() const;
+
+    void setBase(double base);
+
+    void getLogSideSlopeValue(double (&values)[3]) const;
+
+    void setLogSideSlopeValue(const double (&values)[3]);
+
+    void getLogSideOffsetValue(double (&values)[3]) const;
+
+    void setLogSideOffsetValue(const double (&values)[3]);
+
+    void getLinSideSlopeValue(double (&values)[3]) const;
+
+    void setLinSideSlopeValue(const double (&values)[3]);
+
+    void getLinSideOffsetValue(double (&values)[3]) const;
+
+    void setLinSideOffsetValue(const double (&values)[3]);
+
+    LogAffineTransform(const OpenColorIO::LogAffineTransform&);
+
+    OpenColorIO::LogAffineTransform&
+    operator=(const OpenColorIO::LogAffineTransform&);
+
+    ~LogAffineTransform();
+
+} CPPMM_OPAQUEPTR; // struct LogAffineTransform
+
+struct LogCameraTransform {
+    using BoundType = OpenColorIO::LogCameraTransform;
+
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
+
+    OpenColorIO::TransformDirection getDirection() const;
+
+    void setDirection(OpenColorIO::TransformDirection dir);
+
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::LogCameraTransform>
+    Create(const double (&linSideBreakValues)[3]);
+
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
+
+    OpenColorIO::FormatMetadata& getFormatMetadata();
+
+    bool equals(const OpenColorIO::LogCameraTransform& other) const;
+
+    double getBase() const;
+
+    void setBase(double base);
+
+    void getLogSideSlopeValue(double (&values)[3]) const;
+
+    void setLogSideSlopeValue(const double (&values)[3]);
+
+    void getLogSideOffsetValue(double (&values)[3]) const;
+
+    void setLogSideOffsetValue(const double (&values)[3]);
+
+    void getLinSideSlopeValue(double (&values)[3]) const;
+
+    void setLinSideSlopeValue(const double (&values)[3]);
+
+    void getLinSideOffsetValue(double (&values)[3]) const;
+
+    void setLinSideOffsetValue(const double (&values)[3]);
+
+    void getLinSideBreakValue(double (&values)[3]) const;
+
+    void setLinSideBreakValue(const double (&values)[3]);
+
+    bool getLinearSlopeValue(double (&values)[3]) const;
+
+    void setLinearSlopeValue(const double (&values)[3]);
+
+    void unsetLinearSlopeValue();
+
+    LogCameraTransform(const OpenColorIO::LogCameraTransform&);
+
+    OpenColorIO::LogCameraTransform&
+    operator=(const OpenColorIO::LogCameraTransform&);
+
+    ~LogCameraTransform();
+
+} CPPMM_OPAQUEPTR; // struct LogCameraTransform
 
 struct LookTransform {
     using BoundType = OpenColorIO::LookTransform;
 
-    OCIO_SHARED_PTR<OpenColorIO::Transform> createEditableCopy() const;
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
 
     OpenColorIO::TransformDirection getDirection() const;
 
     void setDirection(OpenColorIO::TransformDirection dir);
 
-    static OCIO_SHARED_PTR<OpenColorIO::LookTransform> Create();
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::LookTransform> Create();
 
     const char* getSrc() const;
 
@@ -278,105 +948,352 @@ struct LookTransform {
 
     void setDst(const char* dst);
 
-    void setLooks(const char* looks);
-
     const char* getLooks() const;
 
+    void setLooks(const char* looks);
+
+    bool getSkipColorSpaceConversion() const;
+
+    void setSkipColorSpaceConversion(bool skip);
+
+    static const char* GetLooksResultColorSpace(
+        const std::shared_ptr<const OpenColorIO::Config>& config,
+        const std::shared_ptr<const OpenColorIO::Context>& context,
+        const char* looks);
+
+    OpenColorIO::LookTransform& operator=(const OpenColorIO::LookTransform&);
+
+    ~LookTransform();
+
 } CPPMM_OPAQUEBYTES; // struct LookTransform
+
+struct LogTransform {
+    using BoundType = OpenColorIO::LogTransform;
+
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
+
+    OpenColorIO::TransformDirection getDirection() const;
+
+    void setDirection(OpenColorIO::TransformDirection dir);
+
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::LogTransform> Create();
+
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
+
+    OpenColorIO::FormatMetadata& getFormatMetadata();
+
+    bool equals(const OpenColorIO::LogTransform& other) const;
+
+    double getBase() const;
+
+    void setBase(double val);
+
+    LogTransform(const OpenColorIO::LogTransform&);
+
+    OpenColorIO::LogTransform& operator=(const OpenColorIO::LogTransform&);
+
+    ~LogTransform();
+
+} CPPMM_OPAQUEPTR; // struct LogTransform
+
+struct Lut1DTransform {
+    using BoundType = OpenColorIO::Lut1DTransform;
+
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
+
+    OpenColorIO::TransformDirection getDirection() const;
+
+    void setDirection(OpenColorIO::TransformDirection dir);
+
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::Lut1DTransform> Create();
+
+    static std::shared_ptr<OpenColorIO::Lut1DTransform>
+    Create(unsigned long length, bool isHalfDomain);
+
+    OpenColorIO::BitDepth getFileOutputBitDepth() const;
+
+    void setFileOutputBitDepth(OpenColorIO::BitDepth bitDepth);
+
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
+
+    OpenColorIO::FormatMetadata& getFormatMetadata();
+
+    bool equals(const OpenColorIO::Lut1DTransform& other) const;
+
+    unsigned long getLength() const;
+
+    void setLength(unsigned long length);
+
+    void getValue(unsigned long index, float& r, float& g, float& b) const;
+
+    void setValue(unsigned long index, float r, float g, float b);
+
+    bool getInputHalfDomain() const;
+
+    void setInputHalfDomain(bool isHalfDomain);
+
+    bool getOutputRawHalfs() const;
+
+    void setOutputRawHalfs(bool isRawHalfs);
+
+    OpenColorIO::Lut1DHueAdjust getHueAdjust() const;
+
+    void setHueAdjust(OpenColorIO::Lut1DHueAdjust algo);
+
+    OpenColorIO::Interpolation getInterpolation() const;
+
+    void setInterpolation(OpenColorIO::Interpolation algo);
+
+    Lut1DTransform(const OpenColorIO::Lut1DTransform&);
+
+    OpenColorIO::Lut1DTransform& operator=(const OpenColorIO::Lut1DTransform&);
+
+    ~Lut1DTransform();
+
+} CPPMM_OPAQUEPTR; // struct Lut1DTransform
+
+struct Lut3DTransform {
+    using BoundType = OpenColorIO::Lut3DTransform;
+
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
+
+    OpenColorIO::TransformDirection getDirection() const;
+
+    void setDirection(OpenColorIO::TransformDirection dir);
+
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::Lut3DTransform> Create();
+
+    static std::shared_ptr<OpenColorIO::Lut3DTransform>
+    Create(unsigned long gridSize);
+
+    OpenColorIO::BitDepth getFileOutputBitDepth() const;
+
+    void setFileOutputBitDepth(OpenColorIO::BitDepth bitDepth);
+
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
+
+    OpenColorIO::FormatMetadata& getFormatMetadata();
+
+    bool equals(const OpenColorIO::Lut3DTransform& other) const;
+
+    unsigned long getGridSize() const;
+
+    void setGridSize(unsigned long gridSize);
+
+    void getValue(unsigned long indexR, unsigned long indexG,
+                  unsigned long indexB, float& r, float& g, float& b) const;
+
+    void setValue(unsigned long indexR, unsigned long indexG,
+                  unsigned long indexB, float r, float g, float b);
+
+    OpenColorIO::Interpolation getInterpolation() const;
+
+    void setInterpolation(OpenColorIO::Interpolation algo);
+
+    Lut3DTransform(const OpenColorIO::Lut3DTransform&);
+
+    OpenColorIO::Lut3DTransform& operator=(const OpenColorIO::Lut3DTransform&);
+
+    ~Lut3DTransform();
+
+} CPPMM_OPAQUEPTR; // struct Lut3DTransform
 
 struct MatrixTransform {
     using BoundType = OpenColorIO::MatrixTransform;
 
-    OCIO_SHARED_PTR<OpenColorIO::Transform> createEditableCopy() const;
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
 
     OpenColorIO::TransformDirection getDirection() const;
 
     void setDirection(OpenColorIO::TransformDirection dir);
 
-    static OCIO_SHARED_PTR<OpenColorIO::MatrixTransform> Create();
+    OpenColorIO::TransformType getTransformType() const;
+
+    void validate() const;
+
+    static std::shared_ptr<OpenColorIO::MatrixTransform> Create();
+
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
+
+    OpenColorIO::FormatMetadata& getFormatMetadata();
 
     bool equals(const OpenColorIO::MatrixTransform& other) const;
 
-    void setValue(const float* m44, const float* offset4);
+    void getMatrix(double* m44) const;
 
-    void getValue(float* m44, float* offset4) const;
+    void setMatrix(const double* m44);
 
-    void setMatrix(const float* m44);
+    void getOffset(double* offset4) const;
 
-    void getMatrix(float* m44) const;
+    void setOffset(const double* offset4);
 
-    void setOffset(const float* offset4);
+    OpenColorIO::BitDepth getFileInputBitDepth() const;
 
-    void getOffset(float* offset4) const;
+    void setFileInputBitDepth(OpenColorIO::BitDepth bitDepth);
 
-    static void Fit(float* m44, float* offset4, const float* oldmin4,
-                    const float* oldmax4, const float* newmin4,
-                    const float* newmax4);
+    OpenColorIO::BitDepth getFileOutputBitDepth() const;
 
-    static void Identity(float* m44, float* offset4);
+    void setFileOutputBitDepth(OpenColorIO::BitDepth bitDepth);
 
-    static void Sat(float* m44, float* offset4, float sat,
-                    const float* lumaCoef3);
+    static void Fit(double* m44, double* offset4, const double* oldmin4,
+                    const double* oldmax4, const double* newmin4,
+                    const double* newmax4);
 
-    static void Scale(float* m44, float* offset4, const float* scale4);
+    static void Identity(double* m44, double* offset4);
 
-    static void View(float* m44, float* offset4, int* channelHot4,
-                     const float* lumaCoef3);
+    static void Sat(double* m44, double* offset4, double sat,
+                    const double* lumaCoef3);
 
-} CPPMM_OPAQUEBYTES; // struct MatrixTransform
+    static void Scale(double* m44, double* offset4, const double* scale4);
 
-struct TruelightTransform {
-    using BoundType = OpenColorIO::TruelightTransform;
+    static void View(double* m44, double* offset4, int* channelHot4,
+                     const double* lumaCoef3);
 
-    OCIO_SHARED_PTR<OpenColorIO::Transform> createEditableCopy() const;
+    MatrixTransform(const OpenColorIO::MatrixTransform&);
+
+    OpenColorIO::MatrixTransform&
+    operator=(const OpenColorIO::MatrixTransform&);
+
+    ~MatrixTransform();
+
+} CPPMM_OPAQUEPTR; // struct MatrixTransform
+
+struct RangeTransform {
+    using BoundType = OpenColorIO::RangeTransform;
+
+    std::shared_ptr<OpenColorIO::Transform> createEditableCopy() const;
 
     OpenColorIO::TransformDirection getDirection() const;
 
     void setDirection(OpenColorIO::TransformDirection dir);
 
-    static OCIO_SHARED_PTR<OpenColorIO::TruelightTransform> Create();
+    OpenColorIO::TransformType getTransformType() const;
 
-    void setConfigRoot(const char* configroot);
+    void validate() const;
 
-    const char* getConfigRoot() const;
+    static std::shared_ptr<OpenColorIO::RangeTransform> Create();
 
-    void setProfile(const char* profile);
+    OpenColorIO::RangeStyle getStyle() const;
 
-    const char* getProfile() const;
+    void setStyle(OpenColorIO::RangeStyle style);
 
-    void setCamera(const char* camera);
+    const OpenColorIO::FormatMetadata& getFormatMetadata() const;
 
-    const char* getCamera() const;
+    OpenColorIO::FormatMetadata& getFormatMetadata();
 
-    void setInputDisplay(const char* display);
+    bool equals(const OpenColorIO::RangeTransform& other) const;
 
-    const char* getInputDisplay() const;
+    OpenColorIO::BitDepth getFileInputBitDepth() const;
 
-    void setRecorder(const char* recorder);
+    void setFileInputBitDepth(OpenColorIO::BitDepth bitDepth);
 
-    const char* getRecorder() const;
+    OpenColorIO::BitDepth getFileOutputBitDepth() const;
 
-    void setPrint(const char* print);
+    void setFileOutputBitDepth(OpenColorIO::BitDepth bitDepth);
 
-    const char* getPrint() const;
+    double getMinInValue() const;
 
-    void setLamp(const char* lamp);
+    void setMinInValue(double val);
 
-    const char* getLamp() const;
+    bool hasMinInValue() const;
 
-    void setOutputCamera(const char* camera);
+    void unsetMinInValue();
 
-    const char* getOutputCamera() const;
+    void setMaxInValue(double val);
 
-    void setDisplay(const char* display);
+    double getMaxInValue() const;
 
-    const char* getDisplay() const;
+    bool hasMaxInValue() const;
 
-    void setCubeInput(const char* type);
+    void unsetMaxInValue();
 
-    const char* getCubeInput() const;
+    void setMinOutValue(double val);
 
-} CPPMM_OPAQUEBYTES; // struct TruelightTransform
+    double getMinOutValue() const;
+
+    bool hasMinOutValue() const;
+
+    void unsetMinOutValue();
+
+    void setMaxOutValue(double val);
+
+    double getMaxOutValue() const;
+
+    bool hasMaxOutValue() const;
+
+    void unsetMaxOutValue();
+
+    RangeTransform(const OpenColorIO::RangeTransform&);
+
+    OpenColorIO::RangeTransform& operator=(const OpenColorIO::RangeTransform&);
+
+    ~RangeTransform();
+
+} CPPMM_OPAQUEPTR; // struct RangeTransform
+
+struct FormatMetadata {
+    using BoundType = OpenColorIO::FormatMetadata;
+
+    const char* getElementName() const;
+
+    void setElementName(const char*);
+
+    const char* getElementValue() const;
+
+    void setElementValue(const char*);
+
+    int getNumAttributes() const;
+
+    const char* getAttributeName(int i) const;
+
+    const char* getAttributeValue(int i) const;
+
+    const char* getAttributeValue(const char* name) const;
+
+    void addAttribute(const char* name, const char* value);
+
+    int getNumChildrenElements() const;
+
+    const OpenColorIO::FormatMetadata& getChildElement(int i) const;
+
+    OpenColorIO::FormatMetadata& getChildElement(int i);
+
+    void addChildElement(const char* name, const char* value);
+
+    void clear();
+
+    OpenColorIO::FormatMetadata&
+    operator=(const OpenColorIO::FormatMetadata& rhs);
+
+    const char* getName() const;
+
+    void setName(const char* name);
+
+    const char* getID() const;
+
+    void setID(const char* id);
+
+    FormatMetadata(const OpenColorIO::FormatMetadata& rhs);
+
+    ~FormatMetadata();
+
+} CPPMM_OPAQUEPTR; // struct FormatMetadata
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::FormatMetadata&) CPPMM_IGNORE;
 
 std::basic_ostream<char, std::char_traits<char>>&
 operator<<(std::basic_ostream<char, std::char_traits<char>>&,
@@ -388,6 +1305,10 @@ operator<<(std::basic_ostream<char, std::char_traits<char>>&,
 
 std::basic_ostream<char, std::char_traits<char>>&
 operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::BuiltinTransform&) CPPMM_IGNORE;
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
            const OpenColorIO::CDLTransform&) CPPMM_IGNORE;
 
 std::basic_ostream<char, std::char_traits<char>>&
@@ -396,7 +1317,125 @@ operator<<(std::basic_ostream<char, std::char_traits<char>>&,
 
 std::basic_ostream<char, std::char_traits<char>>&
 operator<<(std::basic_ostream<char, std::char_traits<char>>&,
-           const OpenColorIO::DisplayTransform&) CPPMM_IGNORE;
+           const OpenColorIO::DisplayViewTransform&) CPPMM_IGNORE;
+
+struct GradingRGBM {
+    using BoundType = OpenColorIO::GradingRGBM;
+
+    GradingRGBM();
+
+    GradingRGBM(const OpenColorIO::GradingRGBM&);
+
+    GradingRGBM(double red, double green, double blue, double master);
+
+    GradingRGBM(const double (&rgbm)[4]);
+
+    ~GradingRGBM();
+
+} CPPMM_OPAQUEBYTES; // struct GradingRGBM
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::GradingRGBM&) CPPMM_IGNORE;
+
+struct GradingPrimary {
+    using BoundType = OpenColorIO::GradingPrimary;
+
+    GradingPrimary();
+
+    GradingPrimary(const OpenColorIO::GradingPrimary&);
+
+    GradingPrimary(OpenColorIO::GradingStyle style);
+
+    void validate(OpenColorIO::GradingStyle style) const;
+
+    static double NoClampBlack();
+
+    static double NoClampWhite();
+
+} CPPMM_OPAQUEBYTES; // struct GradingPrimary
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::GradingPrimary&) CPPMM_IGNORE;
+
+struct GradingControlPoint {
+    using BoundType = OpenColorIO::GradingControlPoint;
+
+    GradingControlPoint();
+
+    GradingControlPoint(const OpenColorIO::GradingControlPoint&);
+
+    GradingControlPoint(float x, float y);
+
+} CPPMM_OPAQUEBYTES; // struct GradingControlPoint
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::GradingControlPoint&) CPPMM_IGNORE;
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::GradingBSplineCurve&) CPPMM_IGNORE;
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::GradingRGBCurve&) CPPMM_IGNORE;
+
+struct GradingRGBMSW {
+    using BoundType = OpenColorIO::GradingRGBMSW;
+
+    GradingRGBMSW();
+
+    GradingRGBMSW(const OpenColorIO::GradingRGBMSW&);
+
+    GradingRGBMSW(double red, double green, double blue, double master,
+                  double start, double width);
+
+    GradingRGBMSW(const double (&rgbmsw)[6]);
+
+    GradingRGBMSW(double start, double width);
+
+    ~GradingRGBMSW();
+
+} CPPMM_OPAQUEBYTES; // struct GradingRGBMSW
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::GradingRGBMSW&) CPPMM_IGNORE;
+
+struct GradingTone {
+    using BoundType = OpenColorIO::GradingTone;
+
+    GradingTone();
+
+    GradingTone(const OpenColorIO::GradingTone&);
+
+    GradingTone(OpenColorIO::GradingStyle style);
+
+    void validate() const;
+
+} CPPMM_OPAQUEBYTES; // struct GradingTone
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::GradingTone&) CPPMM_IGNORE;
+
+namespace DynamicPropertyValue {
+
+std::shared_ptr<OpenColorIO::DynamicPropertyDouble>
+AsDouble(std::shared_ptr<OpenColorIO::DynamicProperty>& prop);
+
+std::shared_ptr<OpenColorIO::DynamicPropertyGradingPrimary>
+AsGradingPrimary(std::shared_ptr<OpenColorIO::DynamicProperty>& prop);
+
+std::shared_ptr<OpenColorIO::DynamicPropertyGradingRGBCurve>
+AsGradingRGBCurve(std::shared_ptr<OpenColorIO::DynamicProperty>& prop);
+
+std::shared_ptr<OpenColorIO::DynamicPropertyGradingTone>
+AsGradingTone(std::shared_ptr<OpenColorIO::DynamicProperty>& prop);
+
+} // namespace DynamicPropertyValue
 
 std::basic_ostream<char, std::char_traits<char>>&
 operator<<(std::basic_ostream<char, std::char_traits<char>>&,
@@ -404,11 +1443,43 @@ operator<<(std::basic_ostream<char, std::char_traits<char>>&,
 
 std::basic_ostream<char, std::char_traits<char>>&
 operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::ExponentWithLinearTransform&) CPPMM_IGNORE;
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::ExposureContrastTransform&) CPPMM_IGNORE;
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
            const OpenColorIO::FileTransform&) CPPMM_IGNORE;
 
 std::basic_ostream<char, std::char_traits<char>>&
 operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::FixedFunctionTransform&) CPPMM_IGNORE;
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::GradingPrimaryTransform&) CPPMM_IGNORE;
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::GradingRGBCurveTransform&) CPPMM_IGNORE;
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::GradingToneTransform&) CPPMM_IGNORE;
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
            const OpenColorIO::GroupTransform&) CPPMM_IGNORE;
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::LogAffineTransform&) CPPMM_IGNORE;
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::LogCameraTransform&) CPPMM_IGNORE;
 
 std::basic_ostream<char, std::char_traits<char>>&
 operator<<(std::basic_ostream<char, std::char_traits<char>>&,
@@ -420,14 +1491,20 @@ operator<<(std::basic_ostream<char, std::char_traits<char>>&,
 
 std::basic_ostream<char, std::char_traits<char>>&
 operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::Lut1DTransform&) CPPMM_IGNORE;
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
+           const OpenColorIO::Lut3DTransform&) CPPMM_IGNORE;
+
+std::basic_ostream<char, std::char_traits<char>>&
+operator<<(std::basic_ostream<char, std::char_traits<char>>&,
            const OpenColorIO::MatrixTransform&) CPPMM_IGNORE;
 
 std::basic_ostream<char, std::char_traits<char>>&
 operator<<(std::basic_ostream<char, std::char_traits<char>>&,
-           const OpenColorIO::TruelightTransform&) CPPMM_IGNORE;
+           const OpenColorIO::RangeTransform&) CPPMM_IGNORE;
 
-} // namespace v1
-
-} // namespace OpenColorIO
+} // namespace OCIO_NAMESPACE
 
 } // namespace cppmm_bind
