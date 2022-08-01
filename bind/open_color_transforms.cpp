@@ -11,35 +11,34 @@ struct GradingBSplineCurve {
     using BoundType = OpenColorIO::GradingBSplineCurve;
 
     static std::shared_ptr<OpenColorIO::GradingBSplineCurve>
-    Create(unsigned long size);
+    Create(size_t size);
 
     static std::shared_ptr<OpenColorIO::GradingBSplineCurve>
-    Create(std::initializer_list<OpenColorIO::GradingControlPoint> values);
+    Create(std::initializer_list<OpenColorIO::GradingControlPoint> values) CPPMM_IGNORE;
 
     std::shared_ptr<OpenColorIO::GradingBSplineCurve>
     createEditableCopy() const;
 
-    unsigned long getNumControlPoints() const;
+    size_t getNumControlPoints() const;
 
-    void setNumControlPoints(unsigned long size);
+    void setNumControlPoints(size_t size);
 
     const OpenColorIO::GradingControlPoint&
-    getControlPoint(unsigned long index) const;
+    getControlPoint(size_t index) const;
 
-    OpenColorIO::GradingControlPoint& getControlPoint(unsigned long index);
+    OpenColorIO::GradingControlPoint& getControlPoint(size_t index);
 
-    float getSlope(unsigned long index) const;
+    float getSlope(size_t index) const;
 
-    void setSlope(unsigned long index, float slope);
+    void setSlope(size_t index, float slope);
 
     bool slopesAreDefault() const;
 
     void validate() const;
 
-    GradingBSplineCurve(const OpenColorIO::GradingBSplineCurve&);
-
+    GradingBSplineCurve(const OpenColorIO::GradingBSplineCurve&) = delete;
     OpenColorIO::GradingBSplineCurve&
-    operator=(const OpenColorIO::GradingBSplineCurve&);
+    operator=(const OpenColorIO::GradingBSplineCurve&) = delete;
 
     ~GradingBSplineCurve();
 
@@ -75,7 +74,7 @@ struct GradingRGBCurve {
     ~GradingRGBCurve();
 
     OpenColorIO::GradingRGBCurve&
-    operator=(const OpenColorIO::GradingRGBCurve&);
+    operator=(const OpenColorIO::GradingRGBCurve&) = delete;
 
 } CPPMM_OPAQUEPTR; // struct GradingRGBCurve
 
@@ -92,9 +91,8 @@ struct Transform {
 
     void validate() const;
 
-    Transform(const OpenColorIO::Transform&);
-
-    OpenColorIO::Transform& operator=(const OpenColorIO::Transform&);
+    Transform(const OpenColorIO::Transform&) = delete;
+    OpenColorIO::Transform& operator=(const OpenColorIO::Transform&) = delete;
 
     ~Transform();
 
@@ -126,7 +124,7 @@ struct AllocationTransform {
     void setVars(int numvars, const float* vars);
 
     OpenColorIO::AllocationTransform&
-    operator=(const OpenColorIO::AllocationTransform&);
+    operator=(const OpenColorIO::AllocationTransform&) = delete;
 
     ~AllocationTransform();
 
@@ -218,9 +216,8 @@ struct CDLTransform {
 
     void setFirstSOPDescription(const char* description);
 
-    CDLTransform(const OpenColorIO::CDLTransform&);
-
-    OpenColorIO::CDLTransform& operator=(const OpenColorIO::CDLTransform&);
+    CDLTransform(const OpenColorIO::CDLTransform&) = delete;
+    OpenColorIO::CDLTransform& operator=(const OpenColorIO::CDLTransform&) = delete;
 
     ~CDLTransform();
 
@@ -254,7 +251,7 @@ struct ColorSpaceTransform {
     void setDataBypass(bool enabled);
 
     OpenColorIO::ColorSpaceTransform&
-    operator=(const OpenColorIO::ColorSpaceTransform&);
+    operator=(const OpenColorIO::ColorSpaceTransform&) = delete;
 
     ~ColorSpaceTransform();
 
@@ -305,9 +302,8 @@ struct DynamicProperty {
     OpenColorIO::DynamicPropertyType getType() const;
 
     OpenColorIO::DynamicProperty&
-    operator=(const OpenColorIO::DynamicProperty&);
-
-    DynamicProperty(const OpenColorIO::DynamicProperty&);
+    operator=(const OpenColorIO::DynamicProperty&) = delete;
+    DynamicProperty(const OpenColorIO::DynamicProperty&) = delete;
 
     ~DynamicProperty();
 
@@ -320,10 +316,10 @@ struct DynamicPropertyDouble {
 
     void setValue(double value);
 
-    DynamicPropertyDouble(const OpenColorIO::DynamicPropertyDouble&);
+    DynamicPropertyDouble(const OpenColorIO::DynamicPropertyDouble&)= delete;
 
     OpenColorIO::DynamicPropertyDouble&
-    operator=(const OpenColorIO::DynamicPropertyDouble&);
+    operator=(const OpenColorIO::DynamicPropertyDouble&) = delete;
 
     ~DynamicPropertyDouble();
 
@@ -337,10 +333,10 @@ struct DynamicPropertyGradingPrimary {
     void setValue(const OpenColorIO::GradingPrimary& value);
 
     DynamicPropertyGradingPrimary(
-        const OpenColorIO::DynamicPropertyGradingPrimary&);
+        const OpenColorIO::DynamicPropertyGradingPrimary&) = delete;
 
     OpenColorIO::DynamicPropertyGradingPrimary&
-    operator=(const OpenColorIO::DynamicPropertyGradingPrimary&);
+    operator=(const OpenColorIO::DynamicPropertyGradingPrimary&) = delete;
 
     ~DynamicPropertyGradingPrimary();
 
@@ -355,10 +351,10 @@ struct DynamicPropertyGradingRGBCurve {
     setValue(const std::shared_ptr<const OpenColorIO::GradingRGBCurve>& value);
 
     DynamicPropertyGradingRGBCurve(
-        const OpenColorIO::DynamicPropertyGradingRGBCurve&);
+        const OpenColorIO::DynamicPropertyGradingRGBCurve&) = delete;
 
     OpenColorIO::DynamicPropertyGradingRGBCurve&
-    operator=(const OpenColorIO::DynamicPropertyGradingRGBCurve&);
+    operator=(const OpenColorIO::DynamicPropertyGradingRGBCurve&) = delete;
 
     ~DynamicPropertyGradingRGBCurve();
 
@@ -371,10 +367,10 @@ struct DynamicPropertyGradingTone {
 
     void setValue(const OpenColorIO::GradingTone& value);
 
-    DynamicPropertyGradingTone(const OpenColorIO::DynamicPropertyGradingTone&);
+    DynamicPropertyGradingTone(const OpenColorIO::DynamicPropertyGradingTone&) = delete;
 
     OpenColorIO::DynamicPropertyGradingTone&
-    operator=(const OpenColorIO::DynamicPropertyGradingTone&);
+    operator=(const OpenColorIO::DynamicPropertyGradingTone&) = delete;
 
     ~DynamicPropertyGradingTone();
 
@@ -409,10 +405,10 @@ struct ExponentTransform {
 
     void setNegativeStyle(OpenColorIO::NegativeStyle style);
 
-    ExponentTransform(const OpenColorIO::ExponentTransform&);
+    ExponentTransform(const OpenColorIO::ExponentTransform&) = delete;
 
     OpenColorIO::ExponentTransform&
-    operator=(const OpenColorIO::ExponentTransform&);
+    operator=(const OpenColorIO::ExponentTransform&) = delete;
 
     ~ExponentTransform();
 
@@ -452,10 +448,10 @@ struct ExponentWithLinearTransform {
     void setNegativeStyle(OpenColorIO::NegativeStyle style);
 
     ExponentWithLinearTransform(
-        const OpenColorIO::ExponentWithLinearTransform&);
+        const OpenColorIO::ExponentWithLinearTransform&) = delete;
 
     OpenColorIO::ExponentWithLinearTransform&
-    operator=(const OpenColorIO::ExponentWithLinearTransform&);
+    operator=(const OpenColorIO::ExponentWithLinearTransform&) = delete;
 
     ~ExponentWithLinearTransform();
 
@@ -569,7 +565,7 @@ struct FileTransform {
 
     static const char* GetFormatExtensionByIndex(int index);
 
-    OpenColorIO::FileTransform& operator=(const OpenColorIO::FileTransform&);
+    OpenColorIO::FileTransform& operator=(const OpenColorIO::FileTransform&) = delete;
 
     ~FileTransform();
 
@@ -593,7 +589,7 @@ struct FixedFunctionTransform {
 
     static std::shared_ptr<OpenColorIO::FixedFunctionTransform>
     Create(OpenColorIO::FixedFunctionStyle style, const double* params,
-           unsigned long num);
+           size_t num);
 
     const OpenColorIO::FormatMetadata& getFormatMetadata() const;
 
@@ -605,16 +601,16 @@ struct FixedFunctionTransform {
 
     void setStyle(OpenColorIO::FixedFunctionStyle style);
 
-    unsigned long getNumParams() const;
+    size_t getNumParams() const;
 
     void getParams(double* params) const;
 
-    void setParams(const double* params, unsigned long num);
+    void setParams(const double* params, size_t num);
 
-    FixedFunctionTransform(const OpenColorIO::FixedFunctionTransform&);
+    FixedFunctionTransform(const OpenColorIO::FixedFunctionTransform&) = delete;
 
     OpenColorIO::FixedFunctionTransform&
-    operator=(const OpenColorIO::FixedFunctionTransform&);
+    operator=(const OpenColorIO::FixedFunctionTransform&) = delete;
 
     ~FixedFunctionTransform();
 
@@ -656,10 +652,10 @@ struct GradingPrimaryTransform {
 
     void makeNonDynamic();
 
-    GradingPrimaryTransform(const OpenColorIO::GradingPrimaryTransform&);
+    GradingPrimaryTransform(const OpenColorIO::GradingPrimaryTransform&) = delete;
 
     OpenColorIO::GradingPrimaryTransform&
-    operator=(const OpenColorIO::GradingPrimaryTransform&);
+    operator=(const OpenColorIO::GradingPrimaryTransform&) = delete;
 
     ~GradingPrimaryTransform();
 
@@ -696,9 +692,9 @@ struct GradingRGBCurveTransform {
     void
     setValue(const std::shared_ptr<const OpenColorIO::GradingRGBCurve>& values);
 
-    float getSlope(OpenColorIO::RGBCurveType c, unsigned long index) const;
+    float getSlope(OpenColorIO::RGBCurveType c, size_t index) const;
 
-    void setSlope(OpenColorIO::RGBCurveType c, unsigned long index,
+    void setSlope(OpenColorIO::RGBCurveType c, size_t index,
                   float slope);
 
     bool slopesAreDefault(OpenColorIO::RGBCurveType c) const;
@@ -713,10 +709,10 @@ struct GradingRGBCurveTransform {
 
     void makeNonDynamic();
 
-    GradingRGBCurveTransform(const OpenColorIO::GradingRGBCurveTransform&);
+    GradingRGBCurveTransform(const OpenColorIO::GradingRGBCurveTransform&) = delete;
 
     OpenColorIO::GradingRGBCurveTransform&
-    operator=(const OpenColorIO::GradingRGBCurveTransform&);
+    operator=(const OpenColorIO::GradingRGBCurveTransform&) = delete;
 
     ~GradingRGBCurveTransform();
 
@@ -758,10 +754,10 @@ struct GradingToneTransform {
 
     void makeNonDynamic();
 
-    GradingToneTransform(const OpenColorIO::GradingToneTransform&);
+    GradingToneTransform(const OpenColorIO::GradingToneTransform&) = delete;
 
     OpenColorIO::GradingToneTransform&
-    operator=(const OpenColorIO::GradingToneTransform&);
+    operator=(const OpenColorIO::GradingToneTransform&) = delete;
 
     ~GradingToneTransform();
 
@@ -806,9 +802,9 @@ struct GroupTransform {
 
     static const char* GetFormatExtensionByIndex(int index);
 
-    GroupTransform(const OpenColorIO::GroupTransform&);
+    GroupTransform(const OpenColorIO::GroupTransform&) = delete;
 
-    OpenColorIO::GroupTransform& operator=(const OpenColorIO::GroupTransform&);
+    OpenColorIO::GroupTransform& operator=(const OpenColorIO::GroupTransform&) = delete;
 
     ~GroupTransform();
 
@@ -855,10 +851,10 @@ struct LogAffineTransform {
 
     void setLinSideOffsetValue(const double (&values)[3]);
 
-    LogAffineTransform(const OpenColorIO::LogAffineTransform&);
+    LogAffineTransform(const OpenColorIO::LogAffineTransform&) = delete;
 
     OpenColorIO::LogAffineTransform&
-    operator=(const OpenColorIO::LogAffineTransform&);
+    operator=(const OpenColorIO::LogAffineTransform&) = delete;
 
     ~LogAffineTransform();
 
@@ -916,10 +912,10 @@ struct LogCameraTransform {
 
     void unsetLinearSlopeValue();
 
-    LogCameraTransform(const OpenColorIO::LogCameraTransform&);
+    LogCameraTransform(const OpenColorIO::LogCameraTransform&) = delete;
 
     OpenColorIO::LogCameraTransform&
-    operator=(const OpenColorIO::LogCameraTransform&);
+    operator=(const OpenColorIO::LogCameraTransform&) = delete;
 
     ~LogCameraTransform();
 
@@ -961,7 +957,7 @@ struct LookTransform {
         const std::shared_ptr<const OpenColorIO::Context>& context,
         const char* looks);
 
-    OpenColorIO::LookTransform& operator=(const OpenColorIO::LookTransform&);
+    OpenColorIO::LookTransform& operator=(const OpenColorIO::LookTransform&) = delete;
 
     ~LookTransform();
 
@@ -992,9 +988,9 @@ struct LogTransform {
 
     void setBase(double val);
 
-    LogTransform(const OpenColorIO::LogTransform&);
+    LogTransform(const OpenColorIO::LogTransform&) = delete;
 
-    OpenColorIO::LogTransform& operator=(const OpenColorIO::LogTransform&);
+    OpenColorIO::LogTransform& operator=(const OpenColorIO::LogTransform&) = delete;
 
     ~LogTransform();
 
@@ -1052,9 +1048,9 @@ struct Lut1DTransform {
 
     void setInterpolation(OpenColorIO::Interpolation algo);
 
-    Lut1DTransform(const OpenColorIO::Lut1DTransform&);
+    Lut1DTransform(const OpenColorIO::Lut1DTransform&) = delete;
 
-    OpenColorIO::Lut1DTransform& operator=(const OpenColorIO::Lut1DTransform&);
+    OpenColorIO::Lut1DTransform& operator=(const OpenColorIO::Lut1DTransform&) = delete;
 
     ~Lut1DTransform();
 
@@ -1102,9 +1098,9 @@ struct Lut3DTransform {
 
     void setInterpolation(OpenColorIO::Interpolation algo);
 
-    Lut3DTransform(const OpenColorIO::Lut3DTransform&);
+    Lut3DTransform(const OpenColorIO::Lut3DTransform&) = delete;
 
-    OpenColorIO::Lut3DTransform& operator=(const OpenColorIO::Lut3DTransform&);
+    OpenColorIO::Lut3DTransform& operator=(const OpenColorIO::Lut3DTransform&) = delete;
 
     ~Lut3DTransform();
 
@@ -1161,10 +1157,10 @@ struct MatrixTransform {
     static void View(double* m44, double* offset4, int* channelHot4,
                      const double* lumaCoef3);
 
-    MatrixTransform(const OpenColorIO::MatrixTransform&);
+    MatrixTransform(const OpenColorIO::MatrixTransform&) = delete;
 
     OpenColorIO::MatrixTransform&
-    operator=(const OpenColorIO::MatrixTransform&);
+    operator=(const OpenColorIO::MatrixTransform&) = delete;
 
     ~MatrixTransform();
 
@@ -1235,9 +1231,9 @@ struct RangeTransform {
 
     void unsetMaxOutValue();
 
-    RangeTransform(const OpenColorIO::RangeTransform&);
+    RangeTransform(const OpenColorIO::RangeTransform&) = delete;
 
-    OpenColorIO::RangeTransform& operator=(const OpenColorIO::RangeTransform&);
+    OpenColorIO::RangeTransform& operator=(const OpenColorIO::RangeTransform&) = delete;
 
     ~RangeTransform();
 
@@ -1275,7 +1271,7 @@ struct FormatMetadata {
     void clear();
 
     OpenColorIO::FormatMetadata&
-    operator=(const OpenColorIO::FormatMetadata& rhs);
+    operator=(const OpenColorIO::FormatMetadata& rhs) = delete;
 
     const char* getName() const;
 
@@ -1285,7 +1281,7 @@ struct FormatMetadata {
 
     void setID(const char* id);
 
-    FormatMetadata(const OpenColorIO::FormatMetadata& rhs);
+    FormatMetadata(const OpenColorIO::FormatMetadata& rhs) = delete;
 
     ~FormatMetadata();
 
@@ -1341,9 +1337,7 @@ operator<<(std::basic_ostream<char, std::char_traits<char>>&,
 struct GradingPrimary {
     using BoundType = OpenColorIO::GradingPrimary;
 
-    GradingPrimary();
-
-    GradingPrimary(const OpenColorIO::GradingPrimary&);
+    GradingPrimary(const OpenColorIO::GradingPrimary&) = delete;
 
     GradingPrimary(OpenColorIO::GradingStyle style);
 
@@ -1407,9 +1401,7 @@ operator<<(std::basic_ostream<char, std::char_traits<char>>&,
 struct GradingTone {
     using BoundType = OpenColorIO::GradingTone;
 
-    GradingTone();
-
-    GradingTone(const OpenColorIO::GradingTone&);
+    GradingTone(const OpenColorIO::GradingTone&) = delete;
 
     GradingTone(OpenColorIO::GradingStyle style);
 

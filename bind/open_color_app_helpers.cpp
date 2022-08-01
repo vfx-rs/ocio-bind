@@ -14,32 +14,32 @@ struct ColorSpaceMenuHelper {
     Create(std::shared_ptr<const OpenColorIO::ColorSpaceMenuParameters>
                parameters);
 
-    unsigned long getNumColorSpaces() const;
+    size_t getNumColorSpaces() const;
 
-    const char* getName(unsigned long idx) const;
+    const char* getName(size_t idx) const;
 
-    const char* getUIName(unsigned long idx) const;
+    const char* getUIName(size_t idx) const;
 
-    unsigned long getIndexFromName(const char* name) const;
+    size_t getIndexFromName(const char* name) const;
 
-    unsigned long getIndexFromUIName(const char* name) const;
+    size_t getIndexFromUIName(const char* name) const;
 
-    const char* getDescription(unsigned long idx) const;
+    const char* getDescription(size_t idx) const;
 
-    const char* getFamily(unsigned long idx) const;
+    const char* getFamily(size_t idx) const;
 
-    unsigned long getNumHierarchyLevels(unsigned long idx) const;
+    size_t getNumHierarchyLevels(size_t idx) const;
 
-    const char* getHierarchyLevel(unsigned long idx, unsigned long i) const;
+    const char* getHierarchyLevel(size_t idx, size_t i) const;
 
     const char* getNameFromUIName(const char* uiName) const;
 
     const char* getUINameFromName(const char* name) const;
 
-    ColorSpaceMenuHelper(const OpenColorIO::ColorSpaceMenuHelper&);
+    ColorSpaceMenuHelper(const OpenColorIO::ColorSpaceMenuHelper&) = delete;
 
     OpenColorIO::ColorSpaceMenuHelper&
-    operator=(const OpenColorIO::ColorSpaceMenuHelper&);
+    operator=(const OpenColorIO::ColorSpaceMenuHelper&) = delete;
 
     ~ColorSpaceMenuHelper();
 
@@ -90,16 +90,16 @@ struct ColorSpaceMenuParameters {
 
     void addColorSpace(const char* name);
 
-    unsigned long getNumAddedColorSpaces() const;
+    size_t getNumAddedColorSpaces() const;
 
-    const char* getAddedColorSpace(unsigned long index) const;
+    const char* getAddedColorSpace(size_t index) const;
 
     void clearAddedColorSpaces();
 
     ~ColorSpaceMenuParameters();
 
     OpenColorIO::ColorSpaceMenuParameters&
-    operator=(const OpenColorIO::ColorSpaceMenuParameters&);
+    operator=(const OpenColorIO::ColorSpaceMenuParameters&) = delete;
 
 } CPPMM_OPAQUEPTR; // struct ColorSpaceMenuParameters
 
@@ -109,25 +109,25 @@ struct MixingColorSpaceManager {
     static std::shared_ptr<OpenColorIO::MixingColorSpaceManager>
     Create(std::shared_ptr<const OpenColorIO::Config>& config);
 
-    unsigned long getNumMixingSpaces() const;
+    size_t getNumMixingSpaces() const;
 
-    const char* getMixingSpaceUIName(unsigned long idx) const;
+    const char* getMixingSpaceUIName(size_t idx) const;
 
-    unsigned long getSelectedMixingSpaceIdx() const;
+    size_t getSelectedMixingSpaceIdx() const;
 
-    void setSelectedMixingSpaceIdx(unsigned long idx);
+    void setSelectedMixingSpaceIdx(size_t idx);
 
     void setSelectedMixingSpace(const char* mixingSpace);
 
     bool isPerceptuallyUniform() const;
 
-    unsigned long getNumMixingEncodings() const;
+    size_t getNumMixingEncodings() const;
 
-    const char* getMixingEncodingName(unsigned long idx) const;
+    const char* getMixingEncodingName(size_t idx) const;
 
-    unsigned long getSelectedMixingEncodingIdx() const;
+    size_t getSelectedMixingEncodingIdx() const;
 
-    void setSelectedMixingEncodingIdx(unsigned long idx);
+    void setSelectedMixingEncodingIdx(size_t idx);
 
     void setSelectedMixingEncoding(const char* mixingEncoding);
 
@@ -143,10 +143,10 @@ struct MixingColorSpaceManager {
     OpenColorIO::MixingSlider& getSlider(float sliderMixingMinEdge,
                                          float sliderMixingMaxEdge);
 
-    MixingColorSpaceManager(const OpenColorIO::MixingColorSpaceManager&);
+    MixingColorSpaceManager(const OpenColorIO::MixingColorSpaceManager&) = delete;
 
     OpenColorIO::MixingColorSpaceManager&
-    operator=(const OpenColorIO::MixingColorSpaceManager&);
+    operator=(const OpenColorIO::MixingColorSpaceManager&) = delete;
 
     ~MixingColorSpaceManager();
 
@@ -196,10 +196,9 @@ struct LegacyViewingPipeline {
     std::shared_ptr<const OpenColorIO::Processor> getProcessor(
         const std::shared_ptr<const OpenColorIO::Config>& config) const;
 
-    LegacyViewingPipeline(const OpenColorIO::LegacyViewingPipeline&);
-
+    LegacyViewingPipeline(const OpenColorIO::LegacyViewingPipeline&) = delete;
     OpenColorIO::LegacyViewingPipeline&
-    operator=(const OpenColorIO::LegacyViewingPipeline&);
+    operator=(const OpenColorIO::LegacyViewingPipeline&) = delete;
 
     ~LegacyViewingPipeline();
 
@@ -272,9 +271,8 @@ struct MixingSlider {
 
     float mixingToSlider(float mixingUnits) const;
 
-    MixingSlider(const OpenColorIO::MixingSlider&);
-
-    OpenColorIO::MixingSlider& operator=(const OpenColorIO::MixingSlider&);
+    MixingSlider(const OpenColorIO::MixingSlider&) = delete;
+    OpenColorIO::MixingSlider& operator=(const OpenColorIO::MixingSlider&) = delete;
 
     ~MixingSlider();
 

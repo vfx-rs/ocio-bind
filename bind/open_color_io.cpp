@@ -20,7 +20,7 @@ struct Config {
     CreateFromFile(const char* filename);
 
     static std::shared_ptr<const OCIO::Config>
-    CreateFromStream(std::basic_istream<char, std::char_traits<char>>& istream);
+    CreateFromStream(std::basic_istream<char, std::char_traits<char>>& istream) CPPMM_IGNORE;
 
     std::shared_ptr<OCIO::Config> createEditableCopy() const;
 
@@ -150,6 +150,7 @@ struct Config {
     const char* getDisplay(int index) const;
 
     const char* getDefaultView(const char* display) const;
+    const char* getDefaultView(const char* display, const char* colorSpaceName) const;
 
     int getNumViews(const char* display) const;
 
@@ -302,7 +303,7 @@ struct Config {
     const char* getColorSpaceFromFilepath(const char* filePath) const;
 
     const char* getColorSpaceFromFilepath(const char* filePath,
-                                          unsigned long& ruleIndex) const;
+                                          size_t& ruleIndex) const;
 
     bool filepathOnlyMatchesDefaultRule(const char* filePath) const;
 
@@ -379,9 +380,9 @@ struct Config {
         const std::shared_ptr<const OCIO::Config>& dstConfig,
         const char* dstColorSpaceName, const char* dstInterchangeName);
 
-    Config(const OCIO::Config&);
+    Config(const OCIO::Config&) = delete;
 
-    OCIO::Config& operator=(const OCIO::Config&);
+    OCIO::Config& operator=(const OCIO::Config&) = delete;
 
     ~Config();
 
@@ -396,61 +397,54 @@ struct FileRules {
 
     std::shared_ptr<OCIO::FileRules> createEditableCopy() const;
 
-    unsigned long getNumEntries() const;
+    size_t getNumEntries() const;
+    size_t getIndexForRule(const char* ruleName) const;
+    const char* getName(size_t ruleIndex) const;
+    const char* getPattern(size_t ruleIndex) const;
+    void setPattern(size_t ruleIndex, const char* pattern);
+    const char* getExtension(size_t ruleIndex) const;
+    void setExtension(size_t ruleIndex, const char* extension);
 
-    unsigned long getIndexForRule(const char* ruleName) const;
+    const char* getRegex(size_t ruleIndex) const;
 
-    const char* getName(unsigned long ruleIndex) const;
+    void setRegex(size_t ruleIndex, const char* regex);
 
-    const char* getPattern(unsigned long ruleIndex) const;
+    const char* getColorSpace(size_t ruleIndex) const;
 
-    void setPattern(unsigned long ruleIndex, const char* pattern);
+    void setColorSpace(size_t ruleIndex, const char* colorSpace);
 
-    const char* getExtension(unsigned long ruleIndex) const;
+    size_t getNumCustomKeys(size_t ruleIndex) const;
 
-    void setExtension(unsigned long ruleIndex, const char* extension);
+    const char* getCustomKeyName(size_t ruleIndex,
+                                 size_t key) const;
 
-    const char* getRegex(unsigned long ruleIndex) const;
+    const char* getCustomKeyValue(size_t ruleIndex,
+                                  size_t key) const;
 
-    void setRegex(unsigned long ruleIndex, const char* regex);
-
-    const char* getColorSpace(unsigned long ruleIndex) const;
-
-    void setColorSpace(unsigned long ruleIndex, const char* colorSpace);
-
-    unsigned long getNumCustomKeys(unsigned long ruleIndex) const;
-
-    const char* getCustomKeyName(unsigned long ruleIndex,
-                                 unsigned long key) const;
-
-    const char* getCustomKeyValue(unsigned long ruleIndex,
-                                  unsigned long key) const;
-
-    void setCustomKey(unsigned long ruleIndex, const char* key,
+    void setCustomKey(size_t ruleIndex, const char* key,
                       const char* value);
 
-    void insertRule(unsigned long ruleIndex, const char* name,
+    void insertRule(size_t ruleIndex, const char* name,
                     const char* colorSpace, const char* pattern,
                     const char* extension);
 
-    void insertRule(unsigned long ruleIndex, const char* name,
+    void insertRule(size_t ruleIndex, const char* name,
                     const char* colorSpace, const char* regex);
 
-    void insertPathSearchRule(unsigned long ruleIndex);
+    void insertPathSearchRule(size_t ruleIndex);
 
     void setDefaultRuleColorSpace(const char* colorSpace);
 
-    void removeRule(unsigned long ruleIndex);
+    void removeRule(size_t ruleIndex);
 
-    void increaseRulePriority(unsigned long ruleIndex);
+    void increaseRulePriority(size_t ruleIndex);
 
-    void decreaseRulePriority(unsigned long ruleIndex);
+    void decreaseRulePriority(size_t ruleIndex);
 
     bool isDefault() const;
 
-    FileRules(const OCIO::FileRules&);
-
-    OCIO::FileRules& operator=(const OCIO::FileRules&);
+    FileRules(const OCIO::FileRules&) = delete;
+    OCIO::FileRules& operator=(const OCIO::FileRules&) = delete;
 
     ~FileRules();
 
@@ -463,49 +457,48 @@ struct ViewingRules {
 
     std::shared_ptr<OCIO::ViewingRules> createEditableCopy() const;
 
-    unsigned long getNumEntries() const;
+    size_t getNumEntries() const;
 
-    unsigned long getIndexForRule(const char* ruleName) const;
+    size_t getIndexForRule(const char* ruleName) const;
 
-    const char* getName(unsigned long ruleIndex) const;
+    const char* getName(size_t ruleIndex) const;
 
-    unsigned long getNumColorSpaces(unsigned long ruleIndex) const;
+    size_t getNumColorSpaces(size_t ruleIndex) const;
 
-    const char* getColorSpace(unsigned long ruleIndex,
-                              unsigned long colorSpaceIndex) const;
+    const char* getColorSpace(size_t ruleIndex,
+                              size_t colorSpaceIndex) const;
 
-    void addColorSpace(unsigned long ruleIndex, const char* colorSpace);
+    void addColorSpace(size_t ruleIndex, const char* colorSpace);
 
-    void removeColorSpace(unsigned long ruleIndex,
-                          unsigned long colorSpaceIndex);
+    void removeColorSpace(size_t ruleIndex,
+                          size_t colorSpaceIndex);
 
-    unsigned long getNumEncodings(unsigned long ruleIndex) const;
+    size_t getNumEncodings(size_t ruleIndex) const;
 
-    const char* getEncoding(unsigned long ruleIndex,
-                            unsigned long encodingIndex) const;
+    const char* getEncoding(size_t ruleIndex,
+                            size_t encodingIndex) const;
 
-    void addEncoding(unsigned long ruleIndex, const char* encoding);
+    void addEncoding(size_t ruleIndex, const char* encoding);
 
-    void removeEncoding(unsigned long ruleIndex, unsigned long encodingIndex);
+    void removeEncoding(size_t ruleIndex, size_t encodingIndex);
 
-    unsigned long getNumCustomKeys(unsigned long ruleIndex) const;
+    size_t getNumCustomKeys(size_t ruleIndex) const;
 
-    const char* getCustomKeyName(unsigned long ruleIndex,
-                                 unsigned long keyIndex) const;
+    const char* getCustomKeyName(size_t ruleIndex,
+                                 size_t keyIndex) const;
 
-    const char* getCustomKeyValue(unsigned long ruleIndex,
-                                  unsigned long keyIndex) const;
+    const char* getCustomKeyValue(size_t ruleIndex,
+                                  size_t keyIndex) const;
 
-    void setCustomKey(unsigned long ruleIndex, const char* key,
+    void setCustomKey(size_t ruleIndex, const char* key,
                       const char* value);
 
-    void insertRule(unsigned long ruleIndex, const char* ruleName);
+    void insertRule(size_t ruleIndex, const char* ruleName);
 
-    void removeRule(unsigned long ruleIndex);
+    void removeRule(size_t ruleIndex);
 
-    ViewingRules(const OCIO::ViewingRules&);
-
-    OCIO::ViewingRules& operator=(const OCIO::ViewingRules&);
+    ViewingRules(const OCIO::ViewingRules&) = delete;
+    OCIO::ViewingRules& operator=(const OCIO::ViewingRules&) = delete;
 
     ~ViewingRules();
 
@@ -525,9 +518,9 @@ struct ColorSpace {
 
     void setName(const char* name);
 
-    unsigned long getNumAliases() const;
+    size_t getNumAliases() const;
 
-    const char* getAlias(unsigned long idx) const;
+    const char* getAlias(size_t idx) const;
 
     void addAlias(const char* alias);
 
@@ -589,9 +582,9 @@ struct ColorSpace {
     void setTransform(const std::shared_ptr<const OCIO::Transform>& transform,
                       OCIO::ColorSpaceDirection dir);
 
-    ColorSpace(const OCIO::ColorSpace&);
+    ColorSpace(const OCIO::ColorSpace&) = delete;
 
-    OCIO::ColorSpace& operator=(const OCIO::ColorSpace&);
+    OCIO::ColorSpace& operator=(const OCIO::ColorSpace&) = delete;
 
     ~ColorSpace();
 
@@ -665,9 +658,9 @@ struct Look {
 
     void setDescription(const char* description);
 
-    Look(const OCIO::Look&);
+    Look(const OCIO::Look&) = delete;
 
-    OCIO::Look& operator=(const OCIO::Look&);
+    OCIO::Look& operator=(const OCIO::Look&) = delete;
 
     ~Look();
 
@@ -684,9 +677,9 @@ struct NamedTransform {
 
     void setName(const char* name);
 
-    unsigned long getNumAliases() const;
+    size_t getNumAliases() const;
 
-    const char* getAlias(unsigned long idx) const;
+    const char* getAlias(size_t idx) const;
 
     void addAlias(const char* alias);
 
@@ -724,9 +717,8 @@ struct NamedTransform {
     void setTransform(const std::shared_ptr<const OCIO::Transform>& transform,
                       OCIO::TransformDirection dir);
 
-    NamedTransform(const OCIO::NamedTransform&);
-
-    OCIO::NamedTransform& operator=(const OCIO::NamedTransform&);
+    NamedTransform(const OCIO::NamedTransform&) = delete;
+    OCIO::NamedTransform& operator=(const OCIO::NamedTransform&) = delete;
 
     ~NamedTransform();
 
@@ -772,9 +764,8 @@ struct ViewTransform {
     void setTransform(const std::shared_ptr<const OCIO::Transform>& transform,
                       OCIO::ViewTransformDirection dir);
 
-    ViewTransform(const OCIO::ViewTransform&);
-
-    OCIO::ViewTransform& operator=(const OCIO::ViewTransform&);
+    ViewTransform(const OCIO::ViewTransform&) = delete;
+    OCIO::ViewTransform& operator=(const OCIO::ViewTransform&) = delete;
 
     ~ViewTransform();
 
@@ -837,9 +828,8 @@ struct Context {
     resolveFileLocation(const char* filename,
                         std::shared_ptr<OCIO::Context>& usedContextVars) const;
 
-    Context(const OCIO::Context&);
-
-    OCIO::Context& operator=(const OCIO::Context&);
+    Context(const OCIO::Context&) = delete;
+    OCIO::Context& operator=(const OCIO::Context&) = delete;
 
     ~Context();
 
@@ -893,9 +883,10 @@ struct Processor {
                              OCIO::BitDepth outBitDepth,
                              OCIO::OptimizationFlags oFlags) const;
 
-    Processor(const OCIO::Processor&);
-
-    OCIO::Processor& operator=(const OCIO::Processor&);
+    OCIO::ConstGPUProcessorRcPtr getOptimizedLegacyGPUProcessor(OCIO::OptimizationFlags oFlags, 
+                                                          unsigned edgelen) const;
+    Processor(const OCIO::Processor&) = delete;
+    OCIO::Processor& operator=(const OCIO::Processor&) = delete;
 
     ~Processor();
 
@@ -928,9 +919,8 @@ struct CPUProcessor {
 
     void applyRGBA(float* pixel) const;
 
-    CPUProcessor(const OCIO::CPUProcessor&);
-
-    OCIO::CPUProcessor& operator=(const OCIO::CPUProcessor&);
+    CPUProcessor(const OCIO::CPUProcessor&) = delete;
+    OCIO::CPUProcessor& operator=(const OCIO::CPUProcessor&) = delete;
 
     ~CPUProcessor();
 
@@ -951,9 +941,8 @@ struct GPUProcessor {
     void extractGpuShaderInfo(
         std::shared_ptr<OCIO::GpuShaderCreator>& shaderCreator) const;
 
-    GPUProcessor(const OCIO::GPUProcessor&);
-
-    OCIO::GPUProcessor& operator=(const OCIO::GPUProcessor&);
+    GPUProcessor(const OCIO::GPUProcessor&) = delete;
+    OCIO::GPUProcessor& operator=(const OCIO::GPUProcessor&) = delete;
 
     ~GPUProcessor();
 
@@ -976,9 +965,8 @@ struct ProcessorMetadata {
 
     void addLook(const char* look);
 
-    ProcessorMetadata(const OCIO::ProcessorMetadata&);
-
-    OCIO::ProcessorMetadata& operator=(const OCIO::ProcessorMetadata&);
+    ProcessorMetadata(const OCIO::ProcessorMetadata&) = delete;
+    OCIO::ProcessorMetadata& operator=(const OCIO::ProcessorMetadata&) = delete;
 
     ~ProcessorMetadata();
 
@@ -1035,9 +1023,8 @@ struct Baker {
 
     static const char* getFormatExtensionByIndex(int index);
 
-    Baker(const OCIO::Baker&);
-
-    OCIO::Baker& operator=(const OCIO::Baker&);
+    Baker(const OCIO::Baker&) = delete;
+    OCIO::Baker& operator=(const OCIO::Baker&) = delete;
 
     ~Baker();
 
@@ -1064,9 +1051,9 @@ struct ImageDesc {
 
     long getHeight() const;
 
-    long getXStrideBytes() const;
+    ptrdiff_t getXStrideBytes() const;
 
-    long getYStrideBytes() const;
+    ptrdiff_t getYStrideBytes() const;
 
     bool isRGBAPacked() const;
 
@@ -1079,13 +1066,10 @@ struct Exception {
 
     const char* what() const;
 
-    Exception();
-
     Exception(const char*);
 
-    Exception(const OCIO::Exception&);
-
-    OCIO::Exception& operator=(const OCIO::Exception&);
+    Exception(const OCIO::Exception&) = delete;
+    OCIO::Exception& operator=(const OCIO::Exception&) = delete;
 
     ~Exception();
 
@@ -1185,9 +1169,8 @@ struct GpuShaderCreator {
 
     void finalize();
 
-    GpuShaderCreator(const OCIO::GpuShaderCreator&);
-
-    OCIO::GpuShaderCreator& operator=(const OCIO::GpuShaderCreator&);
+    GpuShaderCreator(const OCIO::GpuShaderCreator&) = delete;
+    OCIO::GpuShaderCreator& operator=(const OCIO::GpuShaderCreator&) = delete;
 
     ~GpuShaderCreator();
 
@@ -1291,9 +1274,6 @@ struct GpuShaderDesc {
 
     void finalize();
 
-    static std::shared_ptr<OCIO::GpuShaderDesc>
-    CreateLegacyShaderDesc(unsigned int edgelen);
-
     static std::shared_ptr<OCIO::GpuShaderDesc> CreateShaderDesc();
 
     unsigned int getNumUniforms() const;
@@ -1321,9 +1301,8 @@ struct GpuShaderDesc {
 
     const char* getShaderText() const;
 
-    GpuShaderDesc(const OCIO::GpuShaderDesc&);
-
-    OCIO::GpuShaderDesc& operator=(const OCIO::GpuShaderDesc&);
+    GpuShaderDesc(const OCIO::GpuShaderDesc&) = delete;
+    OCIO::GpuShaderDesc& operator=(const OCIO::GpuShaderDesc&) = delete;
 
     ~GpuShaderDesc();
 
@@ -1333,11 +1312,13 @@ struct GpuShaderDesc {
         UniformData();
 
         UniformData(const OCIO::GpuShaderDesc::UniformData& data);
+        OCIO::GpuShaderDesc::UniformData& operator=(const OCIO::GpuShaderDesc::UniformData& data);
 
         struct VectorFloat {
             using BoundType = OCIO::GpuShaderDesc::UniformData::VectorFloat;
 
             VectorFloat(const OCIO::GpuShaderDesc::UniformData::VectorFloat&);
+            OCIO::GpuShaderDesc::UniformData::VectorFloat& operator=(const OCIO::GpuShaderDesc::UniformData::VectorFloat&);
 
             VectorFloat(OCIO::GpuShaderDesc::UniformData::VectorFloat&&)
                 CPPMM_IGNORE;
@@ -1350,6 +1331,7 @@ struct GpuShaderDesc {
             using BoundType = OCIO::GpuShaderDesc::UniformData::VectorInt;
 
             VectorInt(const OCIO::GpuShaderDesc::UniformData::VectorInt&);
+            OCIO::GpuShaderDesc::UniformData::VectorInt& operator=(const OCIO::GpuShaderDesc::UniformData::VectorInt&);
 
             VectorInt(OCIO::GpuShaderDesc::UniformData::VectorInt&&)
                 CPPMM_IGNORE;
@@ -1365,37 +1347,35 @@ struct GpuShaderDesc {
 struct BuiltinTransformRegistry {
     using BoundType = OCIO::BuiltinTransformRegistry;
 
-    BuiltinTransformRegistry(const OCIO::BuiltinTransformRegistry&);
 
     OCIO::BuiltinTransformRegistry&
-    operator=(const OCIO::BuiltinTransformRegistry&);
+    operator=(const OCIO::BuiltinTransformRegistry&) = delete;
 
     static std::shared_ptr<const OCIO::BuiltinTransformRegistry> Get();
 
-    unsigned long getNumBuiltins() const;
+    size_t getNumBuiltins() const;
 
-    const char* getBuiltinStyle(unsigned long index) const;
+    const char* getBuiltinStyle(size_t index) const;
 
-    const char* getBuiltinDescription(unsigned long index) const;
+    const char* getBuiltinDescription(size_t index) const;
 
 } CPPMM_OPAQUEPTR; // struct BuiltinTransformRegistry
 
 struct SystemMonitors {
     using BoundType = OCIO::SystemMonitors;
 
-    SystemMonitors(const OCIO::SystemMonitors&);
-
-    OCIO::SystemMonitors& operator=(const OCIO::SystemMonitors&);
+    SystemMonitors(const OCIO::SystemMonitors&) = delete;
+    OCIO::SystemMonitors& operator=(const OCIO::SystemMonitors&) = delete;
 
     static std::shared_ptr<const OCIO::SystemMonitors> Get();
 
     bool isSupported() const;
 
-    unsigned long getNumMonitors() const;
+    size_t getNumMonitors() const;
 
-    const char* getMonitorName(unsigned long idx) const;
+    const char* getMonitorName(size_t idx) const;
 
-    const char* getProfileFilepath(unsigned long idx) const;
+    const char* getProfileFilepath(size_t idx) const;
 
 } CPPMM_OPAQUEPTR; // struct SystemMonitors
 
@@ -1404,13 +1384,10 @@ struct ExceptionMissingFile {
 
     const char* what() const;
 
-    ExceptionMissingFile();
-
     ExceptionMissingFile(const char*);
 
-    ExceptionMissingFile(const OCIO::ExceptionMissingFile&);
-
-    OCIO::ExceptionMissingFile& operator=(const OCIO::ExceptionMissingFile&);
+    ExceptionMissingFile(const OCIO::ExceptionMissingFile&) = delete;
+    OCIO::ExceptionMissingFile& operator=(const OCIO::ExceptionMissingFile&) = delete;
 
     ~ExceptionMissingFile();
 
@@ -1515,9 +1492,9 @@ struct PackedImageDesc {
 
     long getHeight() const;
 
-    long getXStrideBytes() const;
+    ptrdiff_t getXStrideBytes() const;
 
-    long getYStrideBytes() const;
+    ptrdiff_t getYStrideBytes() const;
 
     bool isRGBAPacked() const;
 
@@ -1526,15 +1503,15 @@ struct PackedImageDesc {
     PackedImageDesc(void* data, long width, long height, long numChannels);
 
     PackedImageDesc(void* data, long width, long height, long numChannels,
-                    OCIO::BitDepth bitDepth, long chanStrideBytes,
-                    long xStrideBytes, long yStrideBytes);
+                    OCIO::BitDepth bitDepth, ptrdiff_t chanStrideBytes,
+                    ptrdiff_t xStrideBytes, ptrdiff_t yStrideBytes);
 
     PackedImageDesc(void* data, long width, long height,
                     OCIO::ChannelOrdering chanOrder);
 
     PackedImageDesc(void* data, long width, long height,
                     OCIO::ChannelOrdering chanOrder, OCIO::BitDepth bitDepth,
-                    long chanStrideBytes, long xStrideBytes, long yStrideBytes);
+                    ptrdiff_t chanStrideBytes, ptrdiff_t xStrideBytes, ptrdiff_t yStrideBytes);
 
     ~PackedImageDesc();
 
@@ -1544,7 +1521,7 @@ struct PackedImageDesc {
 
     long getNumChannels() const;
 
-    long getChanStrideBytes() const;
+    ptrdiff_t getChanStrideBytes() const;
 
 } CPPMM_OPAQUEBYTES; // struct PackedImageDesc
 
@@ -1565,9 +1542,9 @@ struct PlanarImageDesc {
 
     long getHeight() const;
 
-    long getXStrideBytes() const;
+    ptrdiff_t getXStrideBytes() const;
 
-    long getYStrideBytes() const;
+    ptrdiff_t getYStrideBytes() const;
 
     bool isRGBAPacked() const;
 
@@ -1578,7 +1555,7 @@ struct PlanarImageDesc {
 
     PlanarImageDesc(void* rData, void* gData, void* bData, void* aData,
                     long width, long height, OCIO::BitDepth bitDepth,
-                    long xStrideBytes, long yStrideBytes);
+                    ptrdiff_t xStrideBytes, ptrdiff_t yStrideBytes);
 
     ~PlanarImageDesc();
 

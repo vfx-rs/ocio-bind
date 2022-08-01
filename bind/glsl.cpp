@@ -25,7 +25,7 @@ struct OpenGLBuilder {
 
     void useAllUniforms();
 
-    unsigned int buildProgram(const std::string& clientShaderProgram);
+    unsigned int buildProgram(const std::string& clientShaderProgram, bool standaloneShader);
 
     void useProgram();
 

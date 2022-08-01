@@ -1,6 +1,7 @@
 #include <memory>
 
 #include <OpenColorIO/OpenColorIO.h>
+#include <OpenColorIO/oglapphelpers/glsl.h>
 
 // CPPMM_ macro definitions etc automatically inserted in this virtual header
 #include <cppmm_bind.hpp>
@@ -16,7 +17,7 @@ public:
     shared_ptr(const ::OCIO_SHARED_PTR<T>& rhs);
     ::OCIO_SHARED_PTR<T>& operator=(const ::OCIO_SHARED_PTR<T>& rhs);
 
-    T* get();
+    T* get() const;
 
     ~shared_ptr() CPPMM_RENAME(dtor);
 
@@ -24,12 +25,43 @@ public:
 
 namespace OCIO = ::OCIO_NAMESPACE;
 
-template class shared_ptr<OCIO_NAMESPACE::GpuShaderDesc>;
-using GpuShaderDescPtr = ::OCIO_SHARED_PTR<OCIO_NAMESPACE::GpuShaderDesc>;
+#define SHR_DEFINE(CLASS) \
+template class shared_ptr<OCIO_NAMESPACE::CLASS>; \
+using CLASS ## Ptr = ::OCIO_SHARED_PTR<OCIO_NAMESPACE::CLASS>; \
+\
+template class shared_ptr<const OCIO_NAMESPACE::CLASS>; \
+using Const ## CLASS ## Ptr = \
+    ::OCIO_SHARED_PTR<const OCIO_NAMESPACE::CLASS>;
 
-template class shared_ptr<const OCIO_NAMESPACE::GpuShaderDesc>;
-using ConstGpuShaderDescPtr =
-    ::OCIO_SHARED_PTR<const OCIO_NAMESPACE::GpuShaderDesc>;
+
+SHR_DEFINE(GpuShaderDesc)
+SHR_DEFINE(AllocationTransform)
+SHR_DEFINE(BuiltinTransform)
+SHR_DEFINE(CDLTransform)
+SHR_DEFINE(ColorSpaceTransform)
+SHR_DEFINE(ExponentTransform)
+SHR_DEFINE(ExponentWithLinearTransform)
+SHR_DEFINE(ExposureContrastTransform)
+SHR_DEFINE(FileTransform)
+SHR_DEFINE(FixedFunctionTransform)
+SHR_DEFINE(GradingPrimaryTransform)
+SHR_DEFINE(GradingRGBCurveTransform)
+SHR_DEFINE(GradingToneTransform)
+SHR_DEFINE(LogAffineTransform)
+SHR_DEFINE(LogCameraTransform)
+SHR_DEFINE(LookTransform)
+SHR_DEFINE(LogTransform)
+SHR_DEFINE(Lut1DTransform)
+SHR_DEFINE(Lut3DTransform)
+SHR_DEFINE(RangeTransform)
+
+SHR_DEFINE(BuiltinTransformRegistry)
+SHR_DEFINE(SystemMonitors)
+SHR_DEFINE(OpenGLBuilder)
+SHR_DEFINE(ColorSpaceMenuHelper)
+SHR_DEFINE(ColorSpaceMenuParameters)
+SHR_DEFINE(MixingColorSpaceManager)
+SHR_DEFINE(LegacyViewingPipeline)
 
 template class shared_ptr<OCIO_NAMESPACE::DisplayViewTransform>;
 using DisplayViewTransformPtr =
@@ -218,8 +250,40 @@ using ConstGradingBSplineCurvePtr =
 
 namespace OCIO = ::OCIO_NAMESPACE;
 
-template class OCIO_SHARED_PTR<OCIO_NAMESPACE::GpuShaderDesc>;
-template class OCIO_SHARED_PTR<const OCIO_NAMESPACE::GpuShaderDesc>;
+#define SHR_FWD(CLASS) \
+template class OCIO_SHARED_PTR<OCIO_NAMESPACE::CLASS>; \
+template class OCIO_SHARED_PTR<const OCIO_NAMESPACE::CLASS>; \
+
+
+SHR_FWD(GpuShaderDesc)
+SHR_FWD(AllocationTransform)
+SHR_FWD(BuiltinTransform)
+SHR_FWD(CDLTransform)
+SHR_FWD(ColorSpaceTransform)
+SHR_FWD(ExponentTransform)
+SHR_FWD(ExponentWithLinearTransform)
+SHR_FWD(ExposureContrastTransform)
+SHR_FWD(FileTransform)
+SHR_FWD(FixedFunctionTransform)
+SHR_FWD(GradingPrimaryTransform)
+SHR_FWD(GradingRGBCurveTransform)
+SHR_FWD(GradingToneTransform)
+SHR_FWD(LogAffineTransform)
+SHR_FWD(LogCameraTransform)
+SHR_FWD(LookTransform)
+SHR_FWD(LogTransform)
+SHR_FWD(Lut1DTransform)
+SHR_FWD(Lut3DTransform)
+SHR_FWD(RangeTransform)
+
+SHR_FWD(BuiltinTransformRegistry)
+SHR_FWD(SystemMonitors)
+SHR_FWD(OpenGLBuilder)
+SHR_FWD(ColorSpaceMenuHelper)
+SHR_FWD(ColorSpaceMenuParameters)
+SHR_FWD(MixingColorSpaceManager)
+SHR_FWD(LegacyViewingPipeline)
+
 
 template class OCIO_SHARED_PTR<OCIO_NAMESPACE::DisplayViewTransform>;
 template class OCIO_SHARED_PTR<const OCIO_NAMESPACE::DisplayViewTransform>;
